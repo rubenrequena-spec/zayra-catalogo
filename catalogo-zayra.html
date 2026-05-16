@@ -31,6 +31,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover.0, maximum-scale=1.0">
   <title>ZAYRA · Olive Essence — Premium Spanish Products</title>
+
+  <!-- ═══ PRE-PAINT LOADER (inline para aparecer INSTANTÁNEAMENTE) ═══ -->
+  <style>
+    html, body { margin: 0; padding: 0; background: #080808; }
+    #zayra-preloader {
+      position: fixed; inset: 0;
+      background: #080808;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 100000;
+      transition: opacity 0.6s ease;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    #zayra-preloader.zp-hide { opacity: 0; pointer-events: none; }
+    .zp-brand {
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: 0.55em;
+      color: #C9A84C;
+      margin-bottom: 36px;
+      padding-left: 0.55em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: zp-fadeIn 0.7s ease 0.05s forwards;
+    }
+    .zp-ring {
+      width: 56px; height: 56px;
+      border: 2px solid rgba(201, 168, 76, 0.15);
+      border-top-color: #C9A84C;
+      border-right-color: #F0D98C;
+      border-radius: 50%;
+      animation: zp-spin 0.9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+    .zp-text {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: rgba(201, 168, 76, 0.7);
+      margin-top: 28px;
+      padding-left: 0.5em;
+      opacity: 0;
+      animation: zp-fadeIn 0.7s ease 0.4s forwards;
+    }
+    .zp-dot { animation: zp-blink 1.4s ease-in-out infinite; }
+    .zp-dot:nth-child(2) { animation-delay: 0.2s; }
+    .zp-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes zp-spin { to { transform: rotate(360deg); } }
+    @keyframes zp-fadeIn { to { opacity: 1; } }
+    @keyframes zp-blink { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+  </style>
+
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ===== VARIABLES & RESET ===== */
@@ -1123,6 +1175,33 @@
 
 </head>
 <body>
+
+<!-- ═══ Pre-paint loader (visible al instante, antes que nada) ═══ -->
+<div id="zayra-preloader" aria-hidden="true">
+  <div class="zp-brand">ZAYRA</div>
+  <div class="zp-ring"></div>
+  <div class="zp-text">Loading<span class="zp-dot">.</span><span class="zp-dot">.</span><span class="zp-dot">.</span></div>
+</div>
+<script>
+  // Esconde el preloader cuando todo carga (o como máximo a los 8s)
+  (function(){
+    var hidden = false;
+    function hidePreloader(){
+      if (hidden) return; hidden = true;
+      var p = document.getElementById('zayra-preloader');
+      if (!p) return;
+      p.classList.add('zp-hide');
+      setTimeout(function(){ if (p && p.parentNode) p.parentNode.removeChild(p); }, 700);
+    }
+    if (document.readyState === 'complete') {
+      setTimeout(hidePreloader, 200);
+    } else {
+      window.addEventListener('load', function(){ setTimeout(hidePreloader, 200); });
+    }
+    // Safety net: si algo se atasca, desaparece a los 8s
+    setTimeout(hidePreloader, 8000);
+  })();
+</script>
 
 <!-- ═══ Loading Bar ═══ -->
 <div id="zayra-progress"><div id="zayra-progress-bar"></div></div>
