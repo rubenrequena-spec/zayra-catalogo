@@ -1543,36 +1543,7 @@
       <div class="products-area" id="products-vintae"></div>
     </div>
 
-  </div><!-- /main -->
-</div><!-- /app -->
 
-<!-- ===== PRODUCT MODAL ===== -->
-<div id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeModalBtn()" style="position:absolute;top:14px;right:18px;z-index:10;background:rgba(10,10,10,.7);border:1px solid rgba(201,168,76,.25);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(245,240,232,.7);cursor:pointer;transition:all .2s;" onmouseover="this.style.color='#C9A84C';this.style.borderColor='rgba(201,168,76,.6)'" onmouseout="this.style.color='rgba(245,240,232,.7)';this.style.borderColor='rgba(201,168,76,.25)'">×</button>
-    <div class="modal-img" id="modal-img-wrap">
-      <svg id="modal-icon" class="modal-img-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
-    </div>
-    <div class="modal-content">
-      <div class="modal-brand-label" id="modal-brand-label"></div>
-      <h2 class="modal-title" id="modal-title"></h2>
-      <div class="modal-subtitle" id="modal-subtitle"></div>
-      <div class="modal-line"></div>
-      <p class="modal-desc" id="modal-desc"></p>
-      <div id="modal-tags-wrap" class="modal-tags"></div>
-      <div>
-        <div id="modal-formats-outer"><div class="modal-formats-title">Available Formats</div>
-        <div class="modal-formats" id="modal-formats"></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== SVG DEFS (shared icons) ===== -->
-<svg style="display:none">
-  <defs>
-    <linearGradient id="goldIcon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-c
 
     <!-- ===== OUR STORY ===== -->
     <div class="brand-view" id="view-about" style="overflow-y:auto;">
@@ -1628,6 +1599,39 @@
     </linearGradient>
   </defs>
 </svg>
+
+
+<!-- ===== SVG DEFS (shared icons) ===== -->
+<svg style="display:none">
+  <defs>
+    <linearGradient id="goldIcon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-c
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ===== PRODUCT MODAL ===== -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModalBtn()" style="position:absolute;top:14px;right:18px;z-index:10;background:rgba(10,10,10,.7);border:1px solid rgba(201,168,76,.25);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(245,240,232,.7);cursor:pointer;transition:all .2s;" onmouseover="this.style.color='#C9A84C';this.style.borderColor='rgba(201,168,76,.6)'" onmouseout="this.style.color='rgba(245,240,232,.7)';this.style.borderColor='rgba(201,168,76,.25)'">×</button>
+    <div class="modal-img" id="modal-img-wrap">
+      <svg id="modal-icon" class="modal-img-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="modal-content">
+      <div class="modal-brand-label" id="modal-brand-label"></div>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-subtitle" id="modal-subtitle"></div>
+      <div class="modal-line"></div>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div id="modal-tags-wrap" class="modal-tags"></div>
+      <div>
+        <div id="modal-formats-outer"><div class="modal-formats-title">Available Formats</div>
+        <div class="modal-formats" id="modal-formats"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script>
 // ===================================================
