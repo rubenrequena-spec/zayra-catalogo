@@ -2,7 +2,7 @@
 // Estrategia: Cache-First con actualización en background
 // Cada deploy nuevo cambia CACHE_VERSION → fuerza actualización automática
 
-const CACHE_VERSION = 'zayra-v17-url';
+const CACHE_VERSION = 'zayra-v18-zaytal';
 const CACHE_ASSETS = [
   './catalogo-zayra.html',
   './manifest.json',
