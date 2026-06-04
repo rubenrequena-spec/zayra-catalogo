@@ -1057,6 +1057,50 @@
       100% { background-position: -200% 0; }
     }
 
+    /* ═══ UPDATE BANNER ═══ */
+    #update-banner {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0;
+      background: #111111;
+      border-bottom: 1px solid rgba(201,168,76,0.5);
+      padding: 12px 18px;
+      z-index: 10000;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to   { transform: translateY(0);     opacity: 1; }
+    }
+    #update-banner.visible { display: flex; }
+    #update-banner-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px; letter-spacing: 0.08em;
+      color: rgba(245,240,232,0.85);
+      flex: 1;
+    }
+    #update-banner-text strong {
+      color: var(--gold); display: block;
+      font-size: 11px; letter-spacing: 0.1em; font-weight: 600;
+      text-transform: uppercase; margin-bottom: 1px;
+    }
+    #update-banner-btn {
+      background: linear-gradient(135deg, #8A6F2E 0%, #C9A84C 50%, #F0D98C 100%);
+      color: #000; border: none; border-radius: 2px;
+      padding: 8px 16px; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+    #update-banner-close {
+      background: none; border: none;
+      color: rgba(245,240,232,0.45); font-size: 18px;
+      cursor: pointer; padding: 4px 6px; flex-shrink: 0; line-height: 1;
+    }
+    #update-banner-close:hover { color: rgba(245,240,232,0.8); }
+
     /* ═══ PWA INSTALL BANNER ═══ */
     #pwa-banner {
       display: none;
@@ -1208,6 +1252,15 @@
 <div id="zayra-progress"><div id="zayra-progress-bar"></div></div>
 
 <!-- ═══ PWA Install Banner (Android/Chrome) ═══ -->
+<!-- ===== UPDATE BANNER ===== -->
+<div id="update-banner">
+  <div id="update-banner-text">
+    <strong>Update available</strong>New version of the catalogue is ready
+  </div>
+  <button id="update-banner-btn" onclick="applyUpdate()">Update now</button>
+  <button id="update-banner-close" onclick="document.getElementById('update-banner').classList.remove('visible')" aria-label="Dismiss">×</button>
+</div>
+
 <div id="pwa-banner">
   <div id="pwa-banner-icon"><img loading="lazy" decoding="async" src="./icons/icon-192.png" alt="ZAYTAL"></div>
   <div id="pwa-banner-text">
@@ -3776,18 +3829,30 @@ document.addEventListener('keydown', function(e) {
 
 <script>
 // ═══ ZAYRA PWA · Service Worker Registration ═══
+var _swWaiting = null;
+
+function applyUpdate() {
+  document.getElementById('update-banner').classList.remove('visible');
+  if (_swWaiting) {
+    _swWaiting.postMessage({ type: 'SKIP_WAITING' });
+  }
+}
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./service-worker.js')
       .then(function(reg) {
-        console.log('[ZAYRA] Service Worker registrado:', reg.scope);
+        // Si ya hay un SW esperando al registrar (ej. segunda pestaña)
+        if (reg.waiting) {
+          _swWaiting = reg.waiting;
+          document.getElementById('update-banner').classList.add('visible');
+        }
         reg.addEventListener('updatefound', function() {
           var newWorker = reg.installing;
           newWorker.addEventListener('statechange', function() {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('[ZAYRA] Nueva version disponible, actualizando...');
-              newWorker.postMessage({ type: 'SKIP_WAITING' });
-              window.location.reload();
+              _swWaiting = newWorker;
+              document.getElementById('update-banner').classList.add('visible');
             }
           });
         });
@@ -3795,6 +3860,11 @@ if ('serviceWorker' in navigator) {
       .catch(function(err) {
         console.warn('[ZAYRA] SW error:', err);
       });
+
+    // Recargar cuando el nuevo SW toma el control
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      window.location.reload();
+    });
   });
 }
 </script>
