@@ -1692,7 +1692,7 @@ const brandIcon = {
   'mareterra': `<defs><linearGradient id="gi3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8A6F2E"/><stop offset="50%" stop-color="#F0D98C"/><stop offset="100%" stop-color="#8A6F2E"/></linearGradient></defs><rect x="12" y="22" width="31" height="42" rx="3" stroke="url(#gi3)" stroke-width="1.2" fill="none"/><rect x="16" y="16" width="23" height="8" rx="1.5" stroke="url(#gi3)" stroke-width="1" fill="none"/><path d="M12 40 C17 36, 22 44, 27.5 40 C33 36, 38 44, 43 40" stroke="url(#gi3)" stroke-width="0.8" stroke-linecap="round"/>`
 };
 
-const data = {
+let data = {
   'la-chinata': {
     'evoo': [
       {name:'Olive Bottle · AECC Special Edition',subtitle:'Special Edition · Cancer Charity',description:'A unique olive-shaped bottle created in collaboration with the Spanish Association Against Cancer (AECC). A portion of every sale is donated to support research and patient care.',img:'./images/a514a75dfc9d.webp',tags:['Special Edition','Charity'],formats:[{label:'Special Edition · Ref. AECC', price:'217 AED · 59 USD'}]},
@@ -3950,6 +3950,127 @@ if ('serviceWorker' in navigator) {
       });
     }
   }
+})();
+</script>
+
+
+<!-- ═══ ZAYRA · Supabase Live Catalog ═══ -->
+<script>
+(function () {
+  var SB_URL  = 'https://lmcwdfwxfvhrukjslblo.supabase.co';
+  var SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtY3dkZnd4ZnZocnVranNsYmxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3ODU0OTQsImV4cCI6MjA5NDM2MTQ5NH0.1B1OpkxZpSMhAC0820nrX4p7qPVVuzlnhzzMNISDQqo';
+  var IMG_BASE = SB_URL + '/storage/v1/object/public/products/';
+
+  var BRANDS = {
+    'La Chinata':     'la-chinata',
+    'Oleícola Jaén':  'oleicola',
+    'Oleícola Jaén ': 'oleicola',
+    'Mareterra':      'mareterra',
+    'Olibaeza':       'olibaeza',
+    'Vintae':         'vintae'
+  };
+
+  var CATS = {
+    'Extra Virgin Olive Oil': 'evoo',
+    'Gift Sets':              'gifts',
+    'Gourmet':                'gourmet',
+    'Horeca':                 'horeca',
+    'Artisan Pâtés':          'patés',
+    'Large Format Conserves': 'conserves',
+    'Natural Vegetables':     'vegetables',
+    'Artisan Desserts':       'desserts',
+    'Premium Selection':      'premium',
+    'Personalised EVOO':      'personalised',
+    'Hospitality':            'hospitality',
+    'Premium Range':          'premium',
+    'Organic Range':          'ecologico',
+    'Family Range':           'familiar',
+    'Gourmet & Wellness':     'gourmet',
+    'Libalis':                'libalis',
+    'Camino Real':            'caminoreal',
+    'Zero Zero':              'zerozero',
+    'Séptimo Sentido':        'septimo',
+    'Pandemonium':            'pandemonium'
+  };
+
+  var COSM = {
+    'Classic Line':    'classic',
+    'Natural Edition': 'natural',
+    'Olivita':         'olivita'
+  };
+
+  function catKey(category, subcategory) {
+    if (category === 'Premium Cosmetics') return COSM[subcategory] || 'classic';
+    return CATS[category] || null;
+  }
+
+  function transform(rows) {
+    var out = {};
+    rows.forEach(function (p) {
+      var sup = p.suppliers;
+      var sName = sup ? (Array.isArray(sup) ? (sup[0] || {}).name : sup.name) : null;
+      if (!sName) return;
+      var brand = BRANDS[sName] || BRANDS[sName.trim()];
+      if (!brand) return;
+      var cat = catKey(p.category, p.subcategory);
+      if (!cat) return;
+
+      if (!out[brand])      out[brand] = {};
+      if (!out[brand][cat]) out[brand][cat] = [];
+
+      var img = p.image_path ? IMG_BASE + p.image_path : null;
+      var fmts = (p.product_formats || []).map(function (f) {
+        return { label: (f.label || '') + (f.reference ? ' · Ref. ' + f.reference : ''), price: '' };
+      });
+
+      out[brand][cat].push({
+        name:        p.name        || '',
+        subtitle:    p.subtitle    || '',
+        description: p.description || '',
+        img:         img,
+        tags:        Array.isArray(p.tags) ? p.tags : [],
+        formats:     fmts
+      });
+    });
+    return out;
+  }
+
+  // Wrap enterApp so it waits for the fetch if still in progress
+  var _ready = false;
+  var _promise = null;
+  var _fired = false;
+  var _orig = enterApp;
+
+  enterApp = function () {
+    if (_fired) return;
+    _fired = true;
+    if (_ready || !_promise) { _orig(); return; }
+    _promise.then(_orig).catch(_orig);
+  };
+
+  // Start fetch immediately (parallel with page load)
+  var selectCols = 'name,subtitle,description,category,subcategory,tags,image_path,suppliers!inner(name),product_formats(label,reference,price_aed,price_usd)';
+  var apiUrl = SB_URL + '/rest/v1/products?select=' + encodeURIComponent(selectCols) + '&active=eq.true&order=name.asc';
+
+  _promise = fetch(apiUrl, {
+    headers: {
+      'apikey':        SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY
+    }
+  })
+  .then(function (res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  })
+  .then(function (rows) {
+    var transformed = transform(rows);
+    if (Object.keys(transformed).length > 0) data = transformed;
+    _ready = true;
+  })
+  .catch(function (err) {
+    console.warn('[ZAYRA] Supabase fallback to static data:', err.message);
+    _ready = true;
+  });
 })();
 </script>
 
