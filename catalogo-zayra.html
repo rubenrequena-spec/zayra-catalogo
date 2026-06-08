@@ -1216,6 +1216,8 @@
       0%, 100% { transform: translateX(-50%) translateY(0); }
       50% { transform: translateX(-50%) translateY(5px); }
     }
+    .product-price-tag { display: none !important; }
+    .formats-table td:last-child { display: none !important; }
 </style>
 
 </head>
@@ -2329,7 +2331,7 @@ function openModal(brand, category, idx) {
     if (p.formats && p.formats.length && p.formats[0] && typeof p.formats[0] === 'object' && p.formats[0].label) {
       fOuter.innerHTML = '<div class="formats-label">Available Formats</div><table class="formats-table">'
         + p.formats.map(function(f){
-            return '<tr><td>' + (f.label||'') + '</td><td>' + (f.price||'') + '</td></tr>';
+            return '<tr><td>' + (f.label||'') + '</td></tr>';
           }).join('') + '</table>';
     } else if (p.formats && p.formats.length) {
       fOuter.innerHTML = '<div class="modal-formats">'
@@ -2417,8 +2419,7 @@ function renderProducts(brand, category) {
       ? '<img src="' + p.img + '" alt="" loading="lazy" style="width:100%;height:100%;object-fit:' + (useWhiteBg ? 'contain' : 'cover') + ';position:absolute;inset:0;">'
       : '<svg class="product-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">' + getProductIcon(brand) + '</svg>';
     var tags = (p.tags||[]).map(function(t){ return '<span class="tag">' + t + '</span>'; }).join('');
-    var priceHtml = (p.formats && p.formats[0] && p.formats[0].price)
-      ? '<div class="product-price-tag">' + p.formats[0].price + '</div>' : '';
+    var priceHtml = '';
     var fmtsHtml = (Array.isArray(p.formats) && p.formats[0] && p.formats[0].label)
       ? p.formats.map(function(f){ return f.label; }).join(' · ')
       : (p.formats||[]).join(' · ');
