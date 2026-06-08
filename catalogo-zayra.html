@@ -4029,7 +4029,8 @@ if ('serviceWorker' in navigator) {
         description: p.description || '',
         img:         img,
         tags:        Array.isArray(p.tags) ? p.tags : [],
-        formats:     fmts
+        formats:     fmts,
+        white:       true
       });
     });
     return out;
@@ -4050,7 +4051,7 @@ if ('serviceWorker' in navigator) {
 
   // Start fetch immediately (parallel with page load)
   var selectCols = 'name,subtitle,description,category,subcategory,tags,image_path,suppliers!inner(name),product_formats(label,reference,price_aed,price_usd)';
-  var apiUrl = SB_URL + '/rest/v1/products?select=' + encodeURIComponent(selectCols) + '&active=eq.true&order=name.asc';
+  var apiUrl = SB_URL + '/rest/v1/products?select=' + encodeURIComponent(selectCols) + '&active=eq.true&order=sort_order.asc,name.asc';
 
   _promise = fetch(apiUrl, {
     headers: {
